@@ -10,8 +10,11 @@ interface SidebarProps {
     onClose: () => void
     nodeData: NodeData | null
   }
+
+
   
   export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
+
     return (
       <div
         className={`fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-10 ${
@@ -46,7 +49,7 @@ interface SidebarProps {
                 <p className="text-sm text-muted-foreground mt-0 text-xs">
                   Ctrl + Enterで送信
                 </p>
-                <Button className="">送信</Button>
+                <Button addNode=lassName="">送信</Button>
               </div>
   
               {/* <div>

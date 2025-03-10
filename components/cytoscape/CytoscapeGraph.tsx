@@ -15,12 +15,12 @@ const graphData = {
 
     cytoscape.use( cola );
 
-/*ーーーーーーーーーーーーーーーーー
+/*ーーーーーーーーーーーーーーーーーーーーーーーー
 まだ使用するかわからないもの
 var gridGuide = require('cytoscape-grid-guide');
 gridGuide( cytoscape ); // register extension
 
-ーーーーーーーーーーーーーーーーー*/
+ーーーーーーーーーーーーーーーーーーーーーーーーー*/
 
 //関数型のアノテーションを返す。通常はname: stringみたいに書くが、ここでは、関数が何の引数を受け取って、何を返すかを明示的に示している。
 //この場合、引数はonNodeClickという関数で、引数は一つ。NodeData型で、そして何も返さない。
