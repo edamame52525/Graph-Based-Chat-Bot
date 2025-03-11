@@ -13,7 +13,7 @@ export async function GET(request: Request) {
         }
         
         data.satus(200).json(JSON.parse(data));
-    
+        return data;
     });
     else{
         data.status(404).json({message: 'No data found'});

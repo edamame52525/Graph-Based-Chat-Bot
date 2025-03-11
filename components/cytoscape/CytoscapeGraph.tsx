@@ -1,6 +1,6 @@
 "use client"
 
-import React, { use, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { NodeSingular,LayoutOptions } from "cytoscape";
 import cytoscape from "cytoscape";
 import type { NodeData } from "@/types/node_types";
@@ -13,7 +13,10 @@ const graphData = {
   edges: [],
 }
 
-cytoscape.use( cola );
+
+    cytoscape.use( cola );
+
+
 
 /*ーーーーーーーーーーーーーーーーーーーーーーーー
 まだ使用するかわからないもの
@@ -50,7 +53,7 @@ useEffect(() => {
   },[]);
 
 // 初回init用
-export default async function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
+export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const cyRef = useRef<cytoscape.Core | null>(null)
 

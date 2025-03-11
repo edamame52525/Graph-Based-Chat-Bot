@@ -1,8 +1,8 @@
 export interface NodeData {
     id: number
+    label: string
     query: string
     response: string
-    edges: number
     color: string
     from : number
 }

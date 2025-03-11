@@ -1,0 +1,9 @@
+[
+    {
+        "id": "1",
+        "label": "Node 1",
+        "query": "This is node 1",
+        "response": "",
+        "color": "#ff5733" 
+    }
+]
