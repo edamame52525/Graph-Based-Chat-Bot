@@ -1,4 +1,4 @@
-import React from "react"
+import React, from "react"
 import { Link, X } from "react-feather"
 import type { NodeData } from "@/types/node_types"
 import { Textarea } from "../ui/textarea"
@@ -16,7 +16,7 @@ interface SidebarProps {
   const ResourceContext = React.createContext("");
   
   export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
-
+    const nodeContext = useContext
     return (
       <div
         className={`fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-10 ${
@@ -51,7 +51,7 @@ interface SidebarProps {
                 <p className="text-sm text-muted-foreground mt-0 text-xs">
                   Ctrl + Enterで送信
                 </p>
-                <NodeManager action="create" nodeData={nodeData}/>
+                <NodeManager/>
               </div>
   
               {/* <div>

@@ -4,6 +4,7 @@ import cytoscape from "cytoscape";
 import type { NodeData } from "@/types/node_types";
 import cola from 'cytoscape-cola';
 import { Button } from "../ui/button";
+import { NodeProvider } from "../context/NodeContext";
 
 
 interface NodeManagerProps {
@@ -14,6 +15,7 @@ interface NodeManagerProps {
 cytoscape.use( cola );
 
 const NodeManager: React.FC<NodeManagerProps> = ({ action, nodeData }) => {
+    const Nodecontext = useContext(NodeProvider);
     const cyRef = useRef<cytoscape.Core | null>(null)
     const cy = cyRef.current
 
