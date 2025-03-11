@@ -41,11 +41,9 @@ export interface ButtonProps
   asChild?: boolean
 }
 
-export interface textAreaProps{
-  onButtonClick:(text:string) => void
-};
 
-const Button = ({onButtonClick}:textAreaProps) => React.forwardRef<HTMLButtonElement, ButtonProps>(
+
+const Button = () => React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
