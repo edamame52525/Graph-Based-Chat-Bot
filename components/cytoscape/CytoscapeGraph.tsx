@@ -13,7 +13,7 @@ const graphData = {
   edges: [],
 }
 
-    cytoscape.use( cola );
+cytoscape.use( cola );
 
 /*ーーーーーーーーーーーーーーーーーーーーーーーー
 まだ使用するかわからないもの
@@ -101,66 +101,6 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
         color: node.data("color"),
       }
 
-      //ノードの位置を調整する
-      // 現在の画面の中心を取得
-      const pan = cy.pan();
-      const zoom = cy.zoom();
-      const centerX = pan.x + (cy.width() / 2) / zoom;
-      const centerY = pan.y + (cy.height() / 2) / zoom;
-
-
-
-      // let count = randomInt(100).toString();
-      let id = Math.floor(Math.random()*10000)  // 新しいノードの ID
-      console.log("id:",id)
-      let sourceId = node.id() // クリックされたノードの ID
-
-      // // デバッグ用出力
-      // console.log("Existing nodes before add:", cy.nodes().map(n => n.data()))
-      // console.log("Existing edges before add:", cy.edges().map(e => e.data()))
-
-      // 新しいノードとエッジを追加
-      const newNode = cy.add([
-        {
-          group: "nodes",
-          data: { id: `${id}`, label: `${id}`, color: "#33ff57" },
-          position: { x: centerX, y: centerY }, // 画面の中心に追加
-        },
-        {
-          group: "edges",
-          data: { id: `edge-${sourceId}-${id}`, source: id, target: sourceId },
-        },
-      ])
-
-      // デバッグ用出力
-      // console.log("New node added:", newNode.map(n => n.data()))
-      // console.log("Existing nodes after add:", cy.nodes().map(n => n.data()))
-      // console.log("Existing edges after add:", cy.edges().map(e => e.data()))
-
-      // ノード追加後にレイアウトを適用（アニメーションなし）
-      const layout = cy.layout(
-        {
-          name: "cola",
-          animate: true,
-          fit: false, 
-          animeduration: 500, 
-          nodeDimensionsIncludeLabels: true, 
-          nodeRepulsion: (node: NodeSingular) => 450,　
-          gravity: 0.25, 
-          maxSimulationTime: 10000000,
-          convergenceThreshold: 1e-9,
-          idealEdgeLength: 20,
-        } as LayoutOptions)
-
-      layout.run()
-
-      // 追加したノードを画面の中心に配置
-      cy.center(cy.$(`#${id}`));
-      // デバッグ用出力
-      // console.log("Layout run completed")
-      // console.log("Existing nodes after layout:", cy.nodes().map(n => n.data()))
-      // console.log("Existing edges after layout:", cy.edges().map(e => e.data()))
-      // console.log("clicked")
       onNodeClick(nodeData)
     })
 

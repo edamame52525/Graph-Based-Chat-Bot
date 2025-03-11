@@ -4,6 +4,7 @@ import type { NodeData } from "@/types/node_types"
 import { Textarea } from "../ui/textarea"
 import { Label } from "@radix-ui/react-label"
 import { Button } from "../ui/button"
+import NodeManager from "../node-controls/NodeManager"
 
 
 interface SidebarProps {
@@ -50,7 +51,7 @@ interface SidebarProps {
                 <p className="text-sm text-muted-foreground mt-0 text-xs">
                   Ctrl + Enterで送信
                 </p>
-                {/* <Button addNode=lassName="">送信</Button> */}
+                <NodeManager action="create" nodeData={nodeData}/>
               </div>
   
               {/* <div>

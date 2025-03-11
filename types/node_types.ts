@@ -4,5 +4,6 @@ export interface NodeData {
     response: string
     edges: number
     color: string
+    from : number
 }
 
