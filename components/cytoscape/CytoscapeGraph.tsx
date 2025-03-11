@@ -1,11 +1,11 @@
 "use client"
 
-import React, { useEffect, useRef } from "react";
+import React, { use, useEffect, useRef } from "react";
 import { NodeSingular,LayoutOptions } from "cytoscape";
 import cytoscape from "cytoscape";
 import type { NodeData } from "@/types/node_types";
 import cola from 'cytoscape-cola';
-
+import { useNode } from "../context/NodeContext";
 
 // 初期ノード登録
 const graphData = {
@@ -29,8 +29,28 @@ interface CytoscapeGraphProps {
 }
 
 
+useEffect(() => {
+  const fetchGraphData = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/app/api/");
+      if(!response.ok) {
+        throw new Error("API request failed");
+      }
+
+      const data = await response.json();
+    
+    }
+  }
+  
+  fetchGraphData();
+  
+  
+
+
+  },[]);
+
 // 初回init用
-export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
+export default async function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const cyRef = useRef<cytoscape.Core | null>(null)
 
@@ -87,6 +107,7 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
 
   //ノードがクリックされたときの処理
   useEffect(() => {
+    const { nodeContext } = useNode()
     const cy = cyRef.current
     if (cy === null) return
 

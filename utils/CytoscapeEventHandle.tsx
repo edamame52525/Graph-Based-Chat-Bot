@@ -4,7 +4,7 @@ import type { NodeData } from "@/types/node_types";
 
 import React from 'react'
 
-interface 
+// interface 
 
 const CytoscapeEventHandle = () => {
   return (
@@ -12,6 +12,6 @@ const CytoscapeEventHandle = () => {
       
     </div>
   )
-}
+};
 
 export default CytoscapeEventHandle
