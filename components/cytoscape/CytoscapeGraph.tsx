@@ -9,7 +9,7 @@ import cola from 'cytoscape-cola';
 
 // 初期ノード登録
 const graphData = {
-  nodes: [{ data: { id: "1", label: "Node 1", description: "This is node 1", color: "#ff5733" } }],
+  nodes: [{ data: { id: "1", label: "Node 1", query: "This is node 1",response: "", color: "#ff5733" } }],
   edges: [],
 }
 
@@ -96,7 +96,7 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
       const nodeData: NodeData = {
         id: node.id(),
         query: node.data("label"),
-        response: node.data("description"),
+        response: node.data("response"),
         edges: node.connectedEdges().length,
         color: node.data("color"),
       }

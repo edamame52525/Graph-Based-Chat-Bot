@@ -1,3 +1,4 @@
+import React from "react"
 import { Link, X } from "react-feather"
 import type { NodeData } from "@/types/node_types"
 import { Textarea } from "../ui/textarea"
@@ -9,9 +10,9 @@ interface SidebarProps {
     isOpen: boolean
     onClose: () => void
     nodeData: NodeData | null
-  }
+}
 
-
+  const ResourceContext = React.createContext("");
   
   export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
 
@@ -49,7 +50,7 @@ interface SidebarProps {
                 <p className="text-sm text-muted-foreground mt-0 text-xs">
                   Ctrl + Enterで送信
                 </p>
-                <Button addNode=lassName="">送信</Button>
+                {/* <Button addNode=lassName="">送信</Button> */}
               </div>
   
               {/* <div>

@@ -29,7 +29,6 @@ const graphData = {
     ],
 }
 
-
 const NodeNetwork:React.FC = () => {
 
 
