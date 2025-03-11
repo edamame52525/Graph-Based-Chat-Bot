@@ -15,15 +15,15 @@ const NodeManager: React.FC<NodeManagerProps> = ({ action, nodeData }) => {
 
 
 
-    cosnt CreateNodes = () => {
+    const CreateNodes = () => {
         
     };
 
-    cosnt UpdateNodes = () => {
+    const UpdateNodes = () => {
 
     };
 
-    cosnt DeleteNodes = () => {
+    const DeleteNodes = () => {
 
     };
 
@@ -41,7 +41,8 @@ const NodeManager: React.FC<NodeManagerProps> = ({ action, nodeData }) => {
             default:
                 break;
 
-    };
+        };
+    }
 
 }
 
