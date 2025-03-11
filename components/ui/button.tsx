@@ -54,9 +54,6 @@ const Button = ({onButtonClick}:textAreaProps) => React.forwardRef<HTMLButtonEle
         ref={ref}
         {...props}
       />
-      // <div>
-      //   <CytoscapeEventHandle/>
-      // </div>
     )
 
   }
