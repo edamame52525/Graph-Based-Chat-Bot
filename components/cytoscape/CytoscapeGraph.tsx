@@ -7,7 +7,13 @@ import type { NodeData } from "@/types/node_types";
 import cola from 'cytoscape-cola';
 import { useNode } from "@/context/NodeContext";
 
+interface CytoscapeGraphProps {
+  onNodeClick: (nodeData: NodeData) => void;
+}
 
+interface ALLNodeData {
+  allNodeData: NodeData[];
+}
 
 // 初期ノード登録
 const initialGraphData = {
@@ -15,38 +21,34 @@ const initialGraphData = {
   edges: [],
 };
 
+async function getGraphData(){
+  const response = await fetch("http://localhost:3000/api/getnode",{
+    cache: "no-cache",
+  });
 
+  console.log("response:", response);
+  const allNodeData: NodeData[] = await response.json();
 
-interface CytoscapeGraphProps {
-  onNodeClick: (nodeData: NodeData) => void;
+  return allNodeData;
 }
+
+
+
+
 
 export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<cytoscape.Core | null>(null);
   const [graphData, setGraphData] = useState(initialGraphData);
   const nodeContext = useNode();
+  const allNodeData = getGraphData();
+
+
 
   console.log("CytoscapeGraph rendered");
   console.log("graphData:", graphData);
   console.log("nodeContext:", nodeContext);
 
-  useEffect(() => {
-    const fetchGraphData = async () => {
-      try {
-        const response = await fetch("/api/");
-        if (!response.ok) {
-          throw new Error("API request failed");
-        }
-        const data = await response.json();
-        setGraphData({ nodes: data, edges: [] });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchGraphData();
-  }, []);
 
   useEffect(() => {
     if (!containerRef.current || !graphData.nodes.length) return;
@@ -101,9 +103,10 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
       const node = event.target;
       const nodeData: NodeData = {
         id: node.id(),
+        label: node.data("label"),
         query: node.data("label"),
         response: node.data("response"),
-        edges: node.connectedEdges().length,
+        from: node.connectedEdges().length,
         color: node.data("color"),
       };
 

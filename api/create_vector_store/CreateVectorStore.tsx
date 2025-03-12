@@ -1,6 +1,6 @@
 import React from 'react'
 import type { NodeData } from '@/types/node_types'
-import { useNode } from '@/components/context/NodeContext'
+import { useNode } from '@/context/NodeContext'
 
 const CreateVectorStore = (Nodes:NodeData) => {
     const currentNodes = useNode();
@@ -17,8 +17,7 @@ const CreateVectorStore = (Nodes:NodeData) => {
 
 
 
-  return (
-  )
+  return;
 }
 
 export default CreateVectorStore

@@ -9,12 +9,12 @@ import { useNode } from "@/context/NodeContext";
 
 interface NodeManagerProps {
     action: 'update' | 'create' | 'delete';
-    nodeData?: NodeData;
+    nodeData: NodeData;
 }
 
 cytoscape.use( cola );
 
-const NodeManager: React.FC<NodeManagerProps> = ({ action, nodeData }) => {
+const NodeManager: React.FC<NodeManagerProps> = ({ action, nodeData}:NodeManagerProps) => {
     const Nodecontext = useNode();
     const cyRef = useRef<cytoscape.Core | null>(null)
     const cy = cyRef.current
@@ -27,7 +27,7 @@ const NodeManager: React.FC<NodeManagerProps> = ({ action, nodeData }) => {
         // let count = randomInt(100).toString();
       let id = Math.floor(Math.random()*10000)  // 新しいノードの ID
       console.log("id:",id)
-      let sourceId = node.id() // クリックされたノードの ID
+      let sourceId = node.id
 
       // デバッグ用出力
       console.log("Existing nodes before add:", cy.nodes().map(n => n.data()))
@@ -38,7 +38,6 @@ const NodeManager: React.FC<NodeManagerProps> = ({ action, nodeData }) => {
         {
           group: "nodes",
           data: { id: `${id}`, label: `${id}`, color: "#33ff57" },
-          position: { x: centerX, y: centerY }, // 画面の中心に追加
         },
         {
           group: "edges",

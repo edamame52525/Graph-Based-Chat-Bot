@@ -1,4 +1,4 @@
-import React, from "react"
+import React from "react"
 import { Link, X } from "react-feather"
 import type { NodeData } from "@/types/node_types"
 import { Textarea } from "../ui/textarea"
