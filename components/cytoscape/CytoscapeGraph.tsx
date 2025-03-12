@@ -5,7 +5,7 @@ import { NodeSingular, LayoutOptions } from "cytoscape";
 import cytoscape from "cytoscape";
 import type { NodeData } from "@/types/node_types";
 import cola from 'cytoscape-cola';
-import { NodeContext } from "@/context/NodeContext";
+import { useNode } from "@/context/NodeContext";
 
 
 
@@ -25,7 +25,7 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<cytoscape.Core | null>(null);
   const [graphData, setGraphData] = useState(initialGraphData);
-  const nodeContext = useContext(NodeContext);
+  const nodeContext = useNode();
 
   console.log("CytoscapeGraph rendered");
   console.log("graphData:", graphData);
@@ -34,7 +34,7 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
   useEffect(() => {
     const fetchGraphData = async () => {
       try {
-        const response = await fetch("@/app/api");
+        const response = await fetch("/api/");
         if (!response.ok) {
           throw new Error("API request failed");
         }

@@ -9,13 +9,19 @@ interface NodeContextType {
 
 const NodeContext = createContext<NodeContextType | undefined>(undefined);
 
-export const NodeProvider: React.FC<{children:ReactNode}> = ({ children }) => {
+export function NodeProvider({children}:{children:ReactNode}) {
     const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
-    console.log("NodeProvider rendered");
-    console.log("selectedNode:", selectedNode);
+    // console.log("NodeProvider rendered");
+    // console.log("selectedNode:", selectedNode);
     return (
         <NodeContext.Provider value={{ selectedNode, setSelectedNode }}>
             {children}
         </NodeContext.Provider>
     );
+};
+
+export function useNode() {
+    const context = useContext(NodeContext);
+
+    return context;
 };
