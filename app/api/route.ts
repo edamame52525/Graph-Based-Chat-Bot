@@ -1,22 +1,14 @@
-import { error } from 'console';
 import fs from 'fs';
 import path from 'path';
 
 export async function GET(request: Request) {
-
-    fs = require('fs');
-    path = require('@/data/nodedata/node.json');
-    fs.readFile(path,'utf-8',(error,data) => {
-        if(error){
-            console.log(error);
-            return;
+    const filePath = path.resolve('./data/nodedata/node.json');
+    fs.readFile(filePath, 'utf-8', (error, data) => {
+        if (error) {
+            console.error(error);
+            return new Response(JSON.stringify({ message: 'No data found' }), { status: 404 });
         }
         
-        data.satus(200).json(JSON.parse(data));
-        return data;
+        return new Response(data, { status: 200, headers: { 'Content-Type': 'application/json' } });
     });
-    else{
-        data.status(404).json({message: 'No data found'});
-    }
-
 }

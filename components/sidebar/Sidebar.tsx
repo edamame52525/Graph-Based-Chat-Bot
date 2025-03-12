@@ -16,7 +16,6 @@ interface SidebarProps {
   const ResourceContext = React.createContext("");
   
   export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
-    const nodeContext = useContext
     return (
       <div
         className={`fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-10 ${

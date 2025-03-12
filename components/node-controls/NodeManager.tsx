@@ -4,7 +4,7 @@ import cytoscape from "cytoscape";
 import type { NodeData } from "@/types/node_types";
 import cola from 'cytoscape-cola';
 import { Button } from "../ui/button";
-import { NodeProvider } from "../context/NodeContext";
+import { NodeProvider } from "@/context/NodeContext";
 
 
 interface NodeManagerProps {

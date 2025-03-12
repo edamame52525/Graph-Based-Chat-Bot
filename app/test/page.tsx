@@ -1,10 +1,13 @@
 "use client"
 
+
 import { useState } from "react"
 import CytoscapeGraph from "@/components/cytoscape/CytoscapeGraph"
 import Sidebar from "@/components/sidebar/Sidebar"
 import type { NodeData } from "@/types/node_types"
-import { NodeProvider } from "@/components/context/NodeContext"
+import { NodeProvider } from "@/context/NodeContext"
+
+
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false)

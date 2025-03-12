@@ -1,68 +1,56 @@
 "use client"
 
-import React, { useEffect, useRef } from "react";
-import { NodeSingular,LayoutOptions } from "cytoscape";
+import React, { useEffect, useRef, useState, useContext } from "react";
+import { NodeSingular, LayoutOptions } from "cytoscape";
 import cytoscape from "cytoscape";
 import type { NodeData } from "@/types/node_types";
 import cola from 'cytoscape-cola';
-import { useNode } from "../context/NodeContext";
+import { NodeContext } from "@/context/NodeContext";
+
+
 
 // 初期ノード登録
-const graphData = {
-  nodes: [{ data: { id: "1", label: "Node 1", query: "This is node 1",response: "", color: "#ff5733" } }],
+const initialGraphData = {
+  nodes: [],
   edges: [],
-}
-
-
-    cytoscape.use( cola );
+};
 
 
 
-/*ーーーーーーーーーーーーーーーーーーーーーーーー
-まだ使用するかわからないもの
-var gridGuide = require('cytoscape-grid-guide');
-gridGuide( cytoscape ); // register extension
-
-ーーーーーーーーーーーーーーーーーーーーーーーーー*/
-
-//関数型のアノテーションを返す。通常はname: stringみたいに書くが、ここでは、関数が何の引数を受け取って、何を返すかを明示的に示している。
-//この場合、引数はonNodeClickという関数で、引数は一つ。NodeData型で、そして何も返さない。
 interface CytoscapeGraphProps {
-  onNodeClick: (nodeData: NodeData) => void
+  onNodeClick: (nodeData: NodeData) => void;
 }
 
-
-useEffect(() => {
-  const fetchGraphData = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/app/api/");
-      if(!response.ok) {
-        throw new Error("API request failed");
-      }
-
-      const data = await response.json();
-    
-    }
-  }
-  
-  fetchGraphData();
-  
-  
-
-
-  },[]);
-
-// 初回init用
 export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const cyRef = useRef<cytoscape.Core | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cyRef = useRef<cytoscape.Core | null>(null);
+  const [graphData, setGraphData] = useState(initialGraphData);
+  const nodeContext = useContext(NodeContext);
+
+  console.log("CytoscapeGraph rendered");
+  console.log("graphData:", graphData);
+  console.log("nodeContext:", nodeContext);
 
   useEffect(() => {
-    if (!containerRef.current) return
+    const fetchGraphData = async () => {
+      try {
+        const response = await fetch("@/app/api");
+        if (!response.ok) {
+          throw new Error("API request failed");
+        }
+        const data = await response.json();
+        setGraphData({ nodes: data, edges: [] });
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    
-    cytoscape.use( cola );
+    fetchGraphData();
+  }, []);
 
+  useEffect(() => {
+    if (!containerRef.current || !graphData.nodes.length) return;
+    cytoscape.use(cola);
     const cy = cytoscape({
       container: containerRef.current,
       elements: [...graphData.nodes, ...graphData.edges],
@@ -72,13 +60,11 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
         fit: false,
         animateDuration: 500,
         animateEasing: "ease-out",
-        nodeRepulsion: (node:NodeSingular) => 450, // ノード間の反発力
-        gravity: 0.25, // 重力
-        idealEdgeLength: 20, // エッジの長さ
-        centerGraph: true, // グラフを中央に寄せる
-      
-
-      }as LayoutOptions,
+        nodeRepulsion: (node: NodeSingular) => 450,
+        gravity: 0.25,
+        idealEdgeLength: 20,
+        centerGraph: true,
+      } as LayoutOptions,
       style: [
         {
           selector: "node",
@@ -102,34 +88,29 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
           },
         },
       ],
-
     });
 
-    cyRef.current = cy     
-  }, []);
+    cyRef.current = cy;
+  }, [graphData]);
 
-  //ノードがクリックされたときの処理
   useEffect(() => {
-    const { nodeContext } = useNode()
-    const cy = cyRef.current
-    if (cy === null) return
-
+    const cy = cyRef.current;
+    if (cy === null) return;
 
     cy.on("tap", "node", (event) => {
-      const node = event.target
+      const node = event.target;
       const nodeData: NodeData = {
         id: node.id(),
         query: node.data("label"),
         response: node.data("response"),
         edges: node.connectedEdges().length,
         color: node.data("color"),
-      }
+      };
 
-      onNodeClick(nodeData)
-    })
+      onNodeClick(nodeData);
+    });
+  }, [graphData]);
 
-  }, [graphData])
-
-  return <div ref={containerRef} className="w-full h-full" />
+  return <div ref={containerRef} className="w-full h-full" />;
 }
 
