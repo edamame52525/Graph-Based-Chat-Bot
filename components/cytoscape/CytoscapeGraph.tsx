@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NodeSingular, LayoutOptions } from "cytoscape";
 import cytoscape from "cytoscape";
 import type { NodeData } from "@/types/node_types";
@@ -11,29 +11,53 @@ interface CytoscapeGraphProps {
   onNodeClick: (nodeData: NodeData) => void;
 }
 
-interface ALLNodeData {
-  allNodeData: NodeData[];
+interface GraphData{
+  nodes:{data:{id:string; label:string; color:string}}[],
+  edges:{data:{id:string; source:number; target:number}}[],
 }
 
-// 初期ノード登録
-const initialGraphData = {
-  nodes: [],
-  edges: [],
+const initialGraphData :GraphData = {
+  nodes:[],
+  edges:[]
 };
 
-async function getGraphData(){
-  const response = await fetch("http://localhost:3000/api/getnode",{
-    cache: "no-cache",
-  });
+//エラーハンドリングは後ほど書く
+async function fetchNodeData(){
+  try {
+    const response = await fetch("http://localhost:3000/api/getnode",{
+      cache: "no-cache",
+    });
 
-  console.log("response:", response);
-  const allNodeData: NodeData[] = await response.json();
-
-  return allNodeData;
+    console.log("response:", response);
+    const allNodeData: NodeData[] = await response.json();
+    return allNodeData;
+  } catch(error){
+    console.error("Error fetching node data",error)
+    return [];
+  }
 }
 
-
-
+function formatNodesForCytoscape(allNodeData: NodeData[]) {
+  if(Array.isArray(allNodeData)&&allNodeData.length>0){
+    return {
+      nodes: allNodeData.map(node => ({
+        data: {
+          id: String(node.id),
+          label: node.label,
+          color: node.color
+        },
+        
+      })),
+      edges:[]
+    };
+  }
+  else{
+    return {
+      nodes: [],
+      edges: []
+    };
+  }
+}   
 
 
 export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
@@ -41,21 +65,32 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
   const cyRef = useRef<cytoscape.Core | null>(null);
   const [graphData, setGraphData] = useState(initialGraphData);
   const nodeContext = useNode();
-  const allNodeData = getGraphData();
-
-
-
-  console.log("CytoscapeGraph rendered");
-  console.log("graphData:", graphData);
-  console.log("nodeContext:", nodeContext);
+  
+  useEffect(() => {
+    async function fetchInitialData() {
+      const allNodedata = await fetchNodeData();
+      const formattedData = formatNodesForCytoscape(allNodedata);
+      setGraphData(formattedData);
+      
+      if (nodeContext?.setAllNodes) {
+        nodeContext.setAllNodes(allNodedata);
+      }
+    }
+    
+    fetchInitialData();
+  }, []);
 
 
   useEffect(() => {
-    if (!containerRef.current || !graphData.nodes.length) return;
+    if(graphData.nodes.length <= 0) return;
+    if(!containerRef.current) return;
+    if(cyRef.current) return;
+
+    //インスタンスの作成
     cytoscape.use(cola);
     const cy = cytoscape({
       container: containerRef.current,
-      elements: [...graphData.nodes, ...graphData.edges],
+      elements: [...graphData.nodes,...graphData.edges],
       layout: {
         name: "cola",
         animate: true,
@@ -93,9 +128,18 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
     });
 
     cyRef.current = cy;
+
+    return () => {
+      if (cyRef.current) {
+        cyRef.current.destroy();
+        cyRef.current = null;
+      }
+    };
+
   }, [graphData]);
 
   useEffect(() => {
+
     const cy = cyRef.current;
     if (cy === null) return;
 
@@ -109,7 +153,6 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
         from: node.connectedEdges().length,
         color: node.data("color"),
       };
-
       onNodeClick(nodeData);
     });
   }, [graphData]);

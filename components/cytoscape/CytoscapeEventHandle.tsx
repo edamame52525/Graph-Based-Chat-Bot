@@ -7,10 +7,7 @@ import React from 'react'
 // interface 
 
 const CytoscapeEventHandle = () => {
-  return (
-    <div>
-      
-    </div>
+
   )
 };
 

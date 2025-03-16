@@ -4,6 +4,7 @@
         "label": "Node 1",
         "query": "This is node 1",
         "response": "",
-        "color": "#ff5733" 
+        "color": "#ff5733" ,
+        "from":  -1
     }
 ]
