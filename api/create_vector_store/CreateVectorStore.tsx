@@ -9,8 +9,9 @@ const CreateVectorStore = (Nodes:NodeData[]) => {
     let crrNodeId = currentNodes?.selectedNode?.id;
     
     if(Nodes.length == 0)return;
+    let i = 0;
     while(Nodes[i].from != -1 ){
-
+      
 
 
 
