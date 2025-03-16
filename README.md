@@ -41,3 +41,7 @@ docker build -t nextjs-app .
 
 ・run containar
 docker run -p 3000:3000 -v $(pwd):/app -v /app/node_modules --rm nextjs-app
+
+コンテナ環境で開発する場合
+１．コンテナ起動
+２．F1キー　→　remote-container:Attach to runnning container

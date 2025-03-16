@@ -1,14 +1,18 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { Children, use, useEffect, useRef, useState } from "react";
 import { NodeSingular, LayoutOptions } from "cytoscape";
 import cytoscape from "cytoscape";
 import type { NodeData } from "@/types/node_types";
 import cola from 'cytoscape-cola';
 import { useNode } from "@/context/NodeContext";
+import { useCytoscape } from "@/context/CytoscapeContext";
+import { access } from "fs";
 
 interface CytoscapeGraphProps {
-  onNodeClick: (nodeData: NodeData) => void;
+  children?: React.ReactNode;
+  onNodeClick?: (nodeData: NodeData) => void;
+  action?: string;
 }
 
 interface GraphData{
@@ -60,11 +64,17 @@ function formatNodesForCytoscape(allNodeData: NodeData[]) {
 }   
 
 
-export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
+const CytoscapeGraph: React.FC<CytoscapeGraphProps> = ({
+  children,
+  onNodeClick,
+  action
+}
+) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<cytoscape.Core | null>(null);
   const [graphData, setGraphData] = useState(initialGraphData);
   const nodeContext = useNode();
+  const cyContext = useCytoscape();
   
   useEffect(() => {
     async function fetchInitialData() {
@@ -128,35 +138,25 @@ export default function CytoscapeGraph({ onNodeClick }: CytoscapeGraphProps) {
     });
 
     cyRef.current = cy;
+    cyContext?.setcyInstance(cy);
 
     return () => {
       if (cyRef.current) {
         cyRef.current.destroy();
         cyRef.current = null;
+        cyContext?.setcyInstance(null);
       }
     };
 
   }, [graphData]);
 
-  useEffect(() => {
 
-    const cy = cyRef.current;
-    if (cy === null) return;
-
-    cy.on("tap", "node", (event) => {
-      const node = event.target;
-      const nodeData: NodeData = {
-        id: node.id(),
-        label: node.data("label"),
-        query: node.data("label"),
-        response: node.data("response"),
-        from: node.connectedEdges().length,
-        color: node.data("color"),
-      };
-      onNodeClick(nodeData);
-    });
-  }, [graphData]);
-
-  return <div ref={containerRef} className="w-full h-full" />;
+  return (
+    <div className="w-full h-full">
+      <div ref={containerRef} className="w-full h-full" />
+      {children}
+    </div>
+  );
 }
 
+export default CytoscapeGraph;
