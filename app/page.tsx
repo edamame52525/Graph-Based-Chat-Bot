@@ -3,7 +3,7 @@
 
 import { useState } from "react"
 import CytoscapeGraph from "@/components/cytoscape/CytoscapeGraph"
-import Sidebar from "@/components/sidebar/Sidebar"
+import Sidebar from "@/components/ui/sidebar/Sidebar"
 import type { NodeData } from "@/types/node_types"
 import { NodeProvider } from "@/context/NodeContext"
 import { CytoscapeInstanceProvider } from "@/context/CytoscapeContext"

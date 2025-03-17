@@ -2,9 +2,9 @@
 
 import React, { Children, use, useEffect, useRef, useState } from "react";
 import { NodeSingular, LayoutOptions } from "cytoscape";
+import cola from 'cytoscape-cola';
 import cytoscape from "cytoscape";
 import type { NodeData } from "@/types/node_types";
-import cola from 'cytoscape-cola';
 import { useNode } from "@/context/NodeContext";
 import { useCytoscape } from "@/context/CytoscapeContext";
 import { access } from "fs";

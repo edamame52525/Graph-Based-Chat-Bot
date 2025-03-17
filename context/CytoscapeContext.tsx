@@ -36,7 +36,7 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
         //       idealEdgeLength: 20,
         //     } as LayoutOptions)
     
-          layout.run()
+        //   layout.run()
 
 
 
@@ -58,7 +58,6 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
         cyInstance.remove(node);
         return true;
     }, [cyInstance]);
-
 
     const contextValue = useMemo(() => ({
         cyInstance,

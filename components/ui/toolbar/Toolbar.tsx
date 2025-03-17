@@ -1,8 +1,8 @@
 "use client"
 
 import { Search, ZoomIn, ZoomOut, Maximize, RotateCcw, Download, Share2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/Input"
+import { Button } from "@/components/ui/button/button"
+import { Input } from "@/components/ui/input/Input"
 import { useState } from "react"
 
 interface ToolbarProps {
