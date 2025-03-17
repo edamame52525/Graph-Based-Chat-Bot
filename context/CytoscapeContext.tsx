@@ -1,5 +1,7 @@
 import React ,{ useContext, createContext, useState, ReactNode, useMemo, useCallback, use  } from "react";
 import type { Core } from "cytoscape";
+import { NodeSingular,LayoutOptions } from "cytoscape";
+
 import { NodeData } from "@/types/node_types";
 
 interface CytoscapeInstanceContextType{
@@ -19,6 +21,24 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
     //未実装（エージェントからクエリ＋回答の二つを受け取ってから実行する関数）
     const createNode =useCallback((data: Partial<NodeData>, position?: { x: number; y: number }) => {
         if(!cyInstance) return null;
+
+        // const layout = cy.layout(
+        //     {
+        //       name: "cola",
+        //       animate: true,
+        //       fit: false, 
+        //       animeduration: 500, 
+        //       nodeDimensionsIncludeLabels: true, 
+        //       nodeRepulsion: (node: NodeSingular) => 450,
+        //       gravity: 0.25, 
+        //       maxSimulationTime: 10000000,
+        //       convergenceThreshold: 1e-9,
+        //       idealEdgeLength: 20,
+        //     } as LayoutOptions)
+    
+          layout.run()
+
+
 
     }, [cyInstance]);
 
