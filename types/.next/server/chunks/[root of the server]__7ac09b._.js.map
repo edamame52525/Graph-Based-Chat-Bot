@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 63, "column": 0}, "map": {"version":3,"sources":["file:///home/edama/dev/next_js_tutorial/network-chat-application/app/api/getnode/route.ts"],"sourcesContent":["import fs from 'fs';\nimport path from 'path';\n\nexport async function GET(request: Request) {\n    const filePath = path.join(process.cwd(),'data','nodedata','node.json');\n    console.log(\"API hit\");\n\n    try {\n        const data = await fs.promises.readFile(filePath, 'utf-8');\n        console.log(data);\n        return new Response(data, { status: 200, headers: { 'Content-Type': 'application/json' } });\n    } catch (error) {\n        console.error(error);\n        return new Response(JSON.stringify({ message: 'No data found' }), { status: 404 });\n    }\n}"],"names":[],"mappings":";;;AAAA;AACA;;;AAEO,eAAe,IAAI,OAAgB;IACtC,MAAM,WAAW,iGAAA,CAAA,UAAI,CAAC,IAAI,CAAC,QAAQ,GAAG,IAAG,QAAO,YAAW;IAC3D,QAAQ,GAAG,CAAC;IAEZ,IAAI;QACA,MAAM,OAAO,MAAM,6FAAA,CAAA,UAAE,CAAC,QAAQ,CAAC,QAAQ,CAAC,UAAU;QAClD,QAAQ,GAAG,CAAC;QACZ,OAAO,IAAI,SAAS,MAAM;YAAE,QAAQ;YAAK,SAAS;gBAAE,gBAAgB;YAAmB;QAAE;IAC7F,EAAE,OAAO,OAAO;QACZ,QAAQ,KAAK,CAAC;QACd,OAAO,IAAI,SAAS,KAAK,SAAS,CAAC;YAAE,SAAS;QAAgB,IAAI;YAAE,QAAQ;QAAI;IACpF;AACJ"}},
+    {"offset": {"line": 91, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
+}
