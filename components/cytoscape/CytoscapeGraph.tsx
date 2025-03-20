@@ -17,7 +17,7 @@ interface CytoscapeGraphProps {
 
 interface GraphData{
   nodes:{data:{id:string; label:string; color:string}}[],
-  edges:{data:{id:string; source:number; target:number}}[],
+  edges:{data:{id:string; source:string; target:string}}[],
 }
 
 const initialGraphData :GraphData = {
@@ -49,10 +49,19 @@ function formatNodesForCytoscape(allNodeData: NodeData[]) {
           id: String(node.id),
           label: node.label,
           color: node.color
-        },
+        }
         
       })),
-      edges:[]
+      edges: allNodeData.map(node => ({
+        data:{
+          id: `edge-${node.id}`,
+          source: String(node.id),
+          target: String(node.from)
+        }
+        
+      }))
+    
+      
     };
   }
   else{

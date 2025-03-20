@@ -1,14 +1,33 @@
-import fs from 'fs';
-import path from 'path';
+import type { Database } from "@/types/database.types";
+import supabase from "@/utils/supabase";
+import { NodeData } from "@/types/node_types";
 
-export async function GET(request: Request) {
-    const filePath = path.join(process.cwd(),'data','nodedata','node.json');
-    console.log("API hit");
-
+export async function GET() {
     try {
-        const data = await fs.promises.readFile(filePath, 'utf-8');
-        console.log(data);
-        return new Response(data, { status: 200, headers: { 'Content-Type': 'application/json' } });
+      console.log("GET NODES");
+      const { data, error } = await supabase
+        .from("nodes")
+        .select("*");
+
+        if (error) throw error;
+
+        console.log("データ",data);
+        const nodeData :NodeData[] = data.map(node =>({
+            id: node.id,
+            from: node.from_node || -1,
+            label: node.label,
+            query: node.content || '',
+            response: node.response || '',
+            color: node.color || '',
+        }))
+
+        console.log("ノードデータ",nodeData);
+
+        return new Response(JSON.stringify(nodeData), {
+            headers: { 'Content-Type': 'application/json' },
+            status: 200
+        });
+
     } catch (error) {
         console.error(error);
         return new Response(JSON.stringify({ message: 'No data found' }), { status: 404 });
