@@ -25,7 +25,6 @@ const initialGraphData :GraphData = {
   edges:[]
 };
 
-//エラーハンドリングは後ほど書く
 async function fetchNodeData(){
   try {
     const response = await fetch("http://localhost:3000/api/getnode",{
@@ -43,25 +42,27 @@ async function fetchNodeData(){
 
 function formatNodesForCytoscape(allNodeData: NodeData[]) {
   if(Array.isArray(allNodeData)&&allNodeData.length>0){
-    return {
-      nodes: allNodeData.map(node => ({
-        data: {
-          id: String(node.id),
-          label: node.label,
-          color: node.color
-        }
-        
-      })),
-      edges: allNodeData.map(node => ({
-        data:{
-          id: `edge-${node.id}`,
-          source: String(node.id),
-          target: String(node.from)
-        }
-        
-      }))
+    const nodes = allNodeData.map(node => ({
+      data: {
+        id: String(node.id),
+        label: node.label,
+        color: node.color
+      }
+    }));
     
-      
+    // fromが有効なノードのみエッジを作成（-1は除外）
+    const edges = allNodeData
+      .filter(node => node.from && node.from > 0)  
+      .map(node => ({
+        data:{
+          id: `edge-${node.from}-${node.id}`,  // エッジIDをより一意にする
+          source: String(node.from),
+          target: String(node.id)
+        }
+    }));
+    return {
+      nodes,
+      edges
     };
   }
   else{
@@ -70,7 +71,8 @@ function formatNodesForCytoscape(allNodeData: NodeData[]) {
       edges: []
     };
   }
-}   
+}
+ 
 
 
 const CytoscapeGraph: React.FC<CytoscapeGraphProps> = ({
