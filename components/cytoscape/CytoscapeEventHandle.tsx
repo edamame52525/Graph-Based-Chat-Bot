@@ -46,6 +46,10 @@ export default function CytoscapeEventHandle({ onNodeClick, action }: CytoscapeG
         // 新しいハンドラを作成
       const handleNodeTap = (event: EventObjectNode) => {
         const node = event.target;
+        const position = node.position();
+        const zoomLevel = 1;
+        const viewportWidth = cy.width(); // 画面の横幅
+        const offsetX = viewportWidth * 0.3; // 画面の左側に寄せるためのオフセット
         const nodeData: NodeData = {
           id: Number(node.id()),
           label: node.data("label"),
@@ -54,6 +58,23 @@ export default function CytoscapeEventHandle({ onNodeClick, action }: CytoscapeG
           from: node.connectedEdges().length,
           color: node.data("color"),
         };
+
+        console.log("今からアニメーション, zoomLevel:", zoomLevel, "position:", position);
+        cy.animate({
+          fit:{
+            eles:node,
+            padding :300
+          },
+          zoom:zoomLevel,
+          pan:{
+            x:position.x - offsetX-10,
+            y:position.y
+          },
+          duration : 500,
+          easing: 'ease-in-out'
+        })
+
+
         nodeContext?.setSelectedNode(nodeData);
         onNodeClick(nodeData);
       };

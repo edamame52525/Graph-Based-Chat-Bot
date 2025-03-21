@@ -46,7 +46,6 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
     const updateNode = useCallback((nodeId: string | number, data: Partial<NodeData>) => {
         if (!cyInstance) return false;
         
-
     }, [cyInstance]);
 
     const deleteNode = useCallback((nodeId: string | number) => {
