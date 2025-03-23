@@ -49,7 +49,9 @@ export default function CytoscapeEventHandle({ onNodeClick, action }: CytoscapeG
         const position = node.position();
         const zoomLevel = 1;
         const viewportWidth = cy.width(); // 画面の横幅
+        // const renderedPosition = cy.renderer().project(node.position()); // 画面のピクセル座標に変換
         const offsetX = viewportWidth * 0.3; // 画面の左側に寄せるためのオフセット
+        // const newPan = cy.renderer().unproject({ x: offsetX, y: renderedPosition.y }); // Cytoscape座標に変換
         const nodeData: NodeData = {
           id: Number(node.id()),
           label: node.data("label"),

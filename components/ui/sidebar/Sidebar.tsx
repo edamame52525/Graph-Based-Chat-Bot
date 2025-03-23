@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button/button"
 import { useNode } from "@/context/NodeContext"
 import { useCytoscape } from "@/context/CytoscapeContext"
 import { set } from "react-hook-form"
-
+import { Agent } from "@/components/agent/agent"
 interface SidebarProps {
     isOpen: boolean
     onClose: () => void
@@ -25,11 +25,12 @@ export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
   const createNode = () => setOperation('create');
   const updateNode = () => setOperation('update');
   const deleteNode = () => setOperation('delete');
-
-  const handleSendMessage = () => {
+  const { processQuery } = Agent();
+  // 発火時の処理
+  const handleSendMessage = async () => {
     if (!messageText.trim()) return;
     console.log("Sending message:", messageText);
-    
+    const result = await processQuery(messageText,nodeContext?.selectedNode?.id!)
     
   }
   

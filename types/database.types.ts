@@ -38,29 +38,29 @@ export type Database = {
       nodes: {
         Row: {
           color: string | null
-          content: string | null
           created_at: string | null
-          from_node: number | null
+          from: number | null
           id: number
           label: string
+          query: string | null
           response: string | null
         }
         Insert: {
           color?: string | null
-          content?: string | null
           created_at?: string | null
-          from_node?: number | null
+          from?: number | null
           id?: number
           label: string
+          query?: string | null
           response?: string | null
         }
         Update: {
           color?: string | null
-          content?: string | null
           created_at?: string | null
-          from_node?: number | null
+          from?: number | null
           id?: number
           label?: string
+          query?: string | null
           response?: string | null
         }
         Relationships: []

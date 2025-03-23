@@ -1,4 +1,3 @@
-import type { Database } from "@/types/database.types";
 import supabase from "@/utils/supabase";
 import { NodeData } from "@/types/node_types";
 
@@ -14,9 +13,9 @@ export async function GET() {
         console.log("データ",data);
         const nodeData :NodeData[] = data.map(node =>({
             id: node.id,
-            from: node.from_node || -1,
+            from: node.from || -1,
             label: node.label,
-            query: node.content || '',
+            query: node.query || '',
             response: node.response || '',
             color: node.color || '',
         }))
