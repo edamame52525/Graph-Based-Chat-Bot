@@ -19,6 +19,8 @@ export function Agent(){
         }
 
 
+        
+
         const {data,error} = await supabase
         .from("nodes")
         .insert(tempNode)
@@ -32,6 +34,7 @@ export function Agent(){
         const newNode = data[0] as NodeData;
 
         cyInstance?.createNode(newNode)
+
 
 
 
