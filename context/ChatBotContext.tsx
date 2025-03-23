@@ -18,17 +18,23 @@ export function ChatBotProvider({children}:{children:React.ReactNode}) {
     
     const client = new OpenAI({apiKey:process.env['OPENAI_API_KEY']});
 
-    const createVectorStore = useCallback((Nodes:NodeData[]) => {
+    const referVectorStore = useCallback((Nodes:NodeData[],NodeID:number) => {
         if(Nodes.length == 0)return;
-        let i = 0;
-        while(Nodes[i].from != -1 ){
-            i++;
+        let refIdx:number = NodeID;
+        let refer:number[] = []
+        while(Nodes[refIdx].from != -1 ){
+            refer.push(Nodes[refIdx].from)
+            refIdx = Nodes[refIdx].from
         }
+
+        const {data,error} = 
     }, []);
+
+    
 
     return (
         <ChatBotContext.Provider value={{
-            createVectorStore
+            referVectorStore
         }}>
             {children}
         </ChatBotContext.Provider>
