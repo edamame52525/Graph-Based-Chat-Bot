@@ -4,7 +4,7 @@ import { NodeData } from "@/types/node_types";
 import { useNode } from "./NodeContext";
 
 interface ChatBotContextType {
-    createVectorStore:(Nodes:NodeData[]) => void;
+    // createVectorStore:(Nodes:NodeData[]) => void;
 }
 
 const ChatBotContext = createContext<ChatBotContextType | undefined>(undefined);

@@ -30,12 +30,9 @@ export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
     console.log("Sending message:", messageText);
-<<<<<<< HEAD
     const result = await processQuery(messageText,nodeContext?.selectedNode?.id!)
-=======
     console.log("参照ノードのコンテンツ",nodeContext?.selectedNode);
     
->>>>>>> 6882987 (createNode部分)
     
   }
 
