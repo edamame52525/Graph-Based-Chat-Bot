@@ -30,10 +30,15 @@ export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
     console.log("Sending message:", messageText);
+<<<<<<< HEAD
     const result = await processQuery(messageText,nodeContext?.selectedNode?.id!)
+=======
+    console.log("参照ノードのコンテンツ",nodeContext?.selectedNode);
+    
+>>>>>>> 6882987 (createNode部分)
     
   }
-  
+
   return (
     <div
       className={`fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-10 ${
@@ -54,12 +59,12 @@ export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
 
               <div>
                 <h3 className="text-lg font-semibold">質問:</h3>
-                <p>○○とはなんでしょうか</p>
+                <p>{nodeContext?.selectedNode?.query}</p>
               </div>
 
               <div>
                 <h3 className="text-lg font-semibold ">AIの回答:</h3>
-                <p>○○とは△△ということです。</p>
+                <p>{nodeContext?.selectedNode?.response}</p>
               </div>
 
               <div className="grid w-full gap-1.5">

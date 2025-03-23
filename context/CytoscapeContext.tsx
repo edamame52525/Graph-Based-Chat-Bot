@@ -1,13 +1,13 @@
 import React ,{ useContext, createContext, useState, ReactNode, useMemo, useCallback, use  } from "react";
 import type { Core } from "cytoscape";
 import { NodeSingular,LayoutOptions } from "cytoscape";
-
+import { useNode } from "./NodeContext";
 import { NodeData } from "@/types/node_types";
 
 interface CytoscapeInstanceContextType{
     cyInstance: (Core | null);
     setcyInstance: (cy: Core | any) => void;
-    createNode: (data: Partial<NodeData>, position?: { x: number; y: number }) => any | null;
+    createNode: (data: NodeData) => any | null;
     updateNode: (nodeId: string | number, data: Partial<NodeData>) => any | null;
     deleteNode: (nodeId: string | number) => any | null;
 }
@@ -16,30 +16,40 @@ interface CytoscapeInstanceContextType{
 const CytoscapeInstanceContext = createContext<CytoscapeInstanceContextType | null>(null);
 
 export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
+    const context = useNode();
     const [cyInstance , setcyInstance] = useState<Core | null>(null);
-    
     //未実装（エージェントからクエリ＋回答の二つを受け取ってから実行する関数）
-    const createNode =useCallback((data: Partial<NodeData>, position?: { x: number; y: number }) => {
+    const createNode =useCallback((data: NodeData) => {
         if(!cyInstance) return null;
 
-        // const layout = cy.layout(
-        //     {
-        //       name: "cola",
-        //       animate: true,
-        //       fit: false, 
-        //       animeduration: 500, 
-        //       nodeDimensionsIncludeLabels: true, 
-        //       nodeRepulsion: (node: NodeSingular) => 450,
-        //       gravity: 0.25, 
-        //       maxSimulationTime: 10000000,
-        //       convergenceThreshold: 1e-9,
-        //       idealEdgeLength: 20,
-        //     } as LayoutOptions)
+        const node = cyInstance.add({
+            group: "nodes",
+            data: {
+                id: String(data.id),
+                label: data.label,
+                color: data.color,
+
+            }
+        });
+
+        const layout = cyInstance.layout(
+            {
+              name: "cola",
+              animate: true,
+              fit: false, 
+              animeduration: 500, 
+              nodeDimensionsIncludeLabels: true, 
+              nodeRepulsion: (node: NodeSingular) => 450,
+              gravity: 0.25, 
+              maxSimulationTime: 10000000,
+              convergenceThreshold: 1e-9,
+              idealEdgeLength: 20,
+            } as LayoutOptions)
     
-        //   layout.run()
+          layout.run()
 
-
-
+        context?.setSelectedNode(data)
+        return 0;
     }, [cyInstance]);
 
     //未実装（構想すら浮かんでいない）

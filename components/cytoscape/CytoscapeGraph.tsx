@@ -4,7 +4,7 @@ import React, { Children, use, useEffect, useRef, useState } from "react";
 import { NodeSingular, LayoutOptions } from "cytoscape";
 import cola from 'cytoscape-cola';
 import cytoscape from "cytoscape";
-import type { NodeData } from "@/types/node_types";
+import type { NodeData,GraphData } from "@/types/node_types";
 import { useNode } from "@/context/NodeContext";
 import { useCytoscape } from "@/context/CytoscapeContext";
 import { access } from "fs";
@@ -15,10 +15,7 @@ interface CytoscapeGraphProps {
   action?: string;
 }
 
-interface GraphData{
-  nodes:{data:{id:string; label:string; color:string}}[],
-  edges:{data:{id:string; source:string; target:string}}[],
-}
+
 
 const initialGraphData :GraphData = {
   nodes:[],
@@ -31,8 +28,8 @@ async function fetchNodeData(){
       cache: "no-cache",
     });
 
-    console.log("response:", response);
     const allNodeData: NodeData[] = await response.json();
+    console.log("allNodeData",allNodeData);
     return allNodeData;
   } catch(error){
     console.error("Error fetching node data",error)
@@ -46,11 +43,14 @@ function formatNodesForCytoscape(allNodeData: NodeData[]) {
       data: {
         id: String(node.id),
         label: node.label,
-        color: node.color
+        color: node.color,
+        query: node.query,
+        response: node.response,
+        from : node.from
       }
     }));
     
-    // fromが有効なノードのみエッジを作成（-1は除外）
+    
     const edges = allNodeData
       .filter(node => node.from && node.from > 0)  
       .map(node => ({

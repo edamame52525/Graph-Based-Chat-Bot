@@ -57,7 +57,7 @@ export default function CytoscapeEventHandle({ onNodeClick, action }: CytoscapeG
           label: node.data("label"),
           query: node.data("label"),
           response: node.data("response"),
-          from: node.connectedEdges().length,
+          from: node.data("from"),
           color: node.data("color"),
         };
 
@@ -85,7 +85,7 @@ export default function CytoscapeEventHandle({ onNodeClick, action }: CytoscapeG
       nodeClickHandler.current = handleNodeTap;
       cy?.on('tap', 'node', handleNodeTap);
     }
-  }, [action, cy, onNodeClick]);
+  }, [action, cy, onNodeClick,nodeContext?.selectedNode]);
 
   
   return null;
