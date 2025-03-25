@@ -1,4 +1,3 @@
-
 export interface NodeData {
     id: number
     label: string

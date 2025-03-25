@@ -55,7 +55,7 @@ export default function CytoscapeEventHandle({ onNodeClick, action }: CytoscapeG
         const nodeData: NodeData = {
           id: Number(node.id()),
           label: node.data("label"),
-          query: node.data("label"),
+          query: node.data("query"),
           response: node.data("response"),
           from: node.data("from"),
           color: node.data("color"),

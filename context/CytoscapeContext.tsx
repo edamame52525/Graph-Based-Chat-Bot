@@ -22,13 +22,24 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
     const createNode =useCallback((data: NodeData) => {
         if(!cyInstance) return null;
 
-        const node = cyInstance.add({
+
+        console.log("作成開始",data);
+        cyInstance.add({
             group: "nodes",
             data: {
                 id: String(data.id),
                 label: data.label,
                 color: data.color,
 
+            }
+        });
+
+        cyInstance.add({
+            group: "edges",
+            data: {
+                id: String("edge"+data.id),
+                source: String(data.from),
+                target: String(data.id),
             }
         });
 

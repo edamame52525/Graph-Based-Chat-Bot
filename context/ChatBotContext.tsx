@@ -12,13 +12,13 @@ const ChatBotContext = createContext<ChatBotContextType | undefined>(undefined);
 export function ChatBotProvider({children}:{children:React.ReactNode}) {
     const [chatbot, setChatbot] = useState<ChatBotContextType | null>(null);
     const currentNodes = useNode();
-    const fs = require('fs');
-    const path = require('@/data');
+
     let crrNodeId = currentNodes?.selectedNode?.id;
     
     const client = new OpenAI({apiKey:process.env['OPENAI_API_KEY']});
 
-    const referVectorStore = useCallback((Nodes:NodeData[],NodeID:number) => {
+    const referVectorStore = useCallback((Nodes
+        :NodeData[],NodeID:number) => {
         if(Nodes.length == 0)return;
         let refIdx:number = NodeID;
         let refer:number[] = []
@@ -27,14 +27,20 @@ export function ChatBotProvider({children}:{children:React.ReactNode}) {
             refIdx = Nodes[refIdx].from
         }
 
-        const {data,error} = 
+        // const {data,error} = 
     }, []);
 
+    const streamResponse = useCallback(async (query:string) => {
+
+
+
+    },[]);
     
 
     return (
         <ChatBotContext.Provider value={{
-            referVectorStore
+            referVectorStore,
+            streamResponse
         }}>
             {children}
         </ChatBotContext.Provider>
