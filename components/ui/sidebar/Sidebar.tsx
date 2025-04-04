@@ -1,4 +1,5 @@
-import React,{useState} from "react"
+import React,{useEffect, useState} from "react"
+import ReactMarkdown from 'react-markdown'
 import { Link, X } from "react-feather"
 import type { NodeData } from "@/types/node_types"
 import { Textarea } from "../textarea/textarea"
@@ -18,21 +19,39 @@ type OperationProps = 'none' | 'create' | 'update' | 'delete' | 'detail';
 
   
 export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
-  const [operation, setOperation] = useState<OperationProps>('none');
   const [messageText, setMessageText] = useState("");
+  const [nodeResponse,setNodeResponse] = useState<string|null>()
   const nodeContext = useNode();
-  const createNode = () => setOperation('create');
-  const updateNode = () => setOperation('update');
-  const deleteNode = () => setOperation('delete');
+  const cyInstance = useCytoscape();
   const { processQuery } = useAgent();
   // 発火時の処理
   const handleSendMessage = async () => {
+
+
     if (!messageText.trim()) return;
     console.log("Sending message:", messageText);
     const result = await processQuery(messageText,nodeContext?.selectedNode?.id!)
     console.log("参照ノードのコンテンツ",nodeContext?.selectedNode);
-    
     setMessageText("");}
+
+  useEffect(() =>{
+    if (nodeContext?.selectedNode?.id && cyInstance) {
+      const selectedNodeId = nodeContext.selectedNode.id.toString();
+      const element = cyInstance?.cyInstance?.getElementById(selectedNodeId);
+
+      if (element && element.data) {
+        const response = element.data("response");
+        setNodeResponse(response || "");
+      } else {
+        setNodeResponse("");
+      }
+    }
+
+
+  },[nodeContext?.selectedNode])
+    
+
+
 
   return (
     <div
@@ -42,7 +61,7 @@ export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
     >
       <div className="p-6 h-full overflow-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">○○に関する情報</h2>
+          <h2 className="text-2xl font-bold">マイクロサービスアーキテクチャに関する情報</h2>
           <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-100" aria-label="Close sidebar">
             <X className="h-6 w-6" />
           </button>
@@ -59,7 +78,7 @@ export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
 
               <div>
                 <h3 className="text-lg font-semibold ">AIの回答:</h3>
-                <p>{nodeContext?.selectedNode?.response}</p>
+                <ReactMarkdown>{nodeResponse}</ReactMarkdown>
               </div>
 
               <div className="grid w-full gap-1.5">

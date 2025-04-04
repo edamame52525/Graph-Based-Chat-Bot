@@ -5,9 +5,9 @@ import { NodeSingular, LayoutOptions } from "cytoscape";
 import cola from 'cytoscape-cola';
 import cytoscape from "cytoscape";
 import type { NodeData,GraphData } from "@/types/node_types";
+import gridGuide from 'cytoscape-grid-guide';
 import { useNode } from "@/context/NodeContext";
 import { useCytoscape } from "@/context/CytoscapeContext";
-import { access } from "fs";
 
 interface CytoscapeGraphProps {
   children?: React.ReactNode;
@@ -16,11 +16,14 @@ interface CytoscapeGraphProps {
 }
 
 
-
 const initialGraphData :GraphData = {
   nodes:[],
   edges:[]
 };
+
+
+
+
 
 async function fetchNodeData(){
   try {
@@ -39,6 +42,8 @@ async function fetchNodeData(){
 
 function formatNodesForCytoscape(allNodeData: NodeData[]) {
   if(Array.isArray(allNodeData)&&allNodeData.length>0){
+
+
     const nodes = allNodeData.map(node => ({
       data: {
         id: String(node.id),
@@ -46,18 +51,21 @@ function formatNodesForCytoscape(allNodeData: NodeData[]) {
         color: node.color,
         query: node.query,
         response: node.response,
-        from : node.from
+        parentID : String(node.parent),
+        summary:node.summary
       }
     }));
+
+    console.log("フォーマットデータ",nodes)
     
     
     const edges = allNodeData
-      .filter(node => node.from && node.from > 0)  
+      .filter(node => node.parent && node.parent > 0)  
       .map(node => ({
         data:{
-          id: `edge-${node.from}-${node.id}`,  // エッジIDをより一意にする
-          source: String(node.from),
-          target: String(node.id)
+          id: `edge-${node.parent}-${node.id}`,  // エッジIDをより一意にする
+          target: String(node.parent),
+          source: String(node.id)
         }
     }));
     return {
@@ -90,9 +98,11 @@ const CytoscapeGraph: React.FC<CytoscapeGraphProps> = ({
   useEffect(() => {
     async function fetchInitialData() {
       const allNodedata = await fetchNodeData();
+
       const formattedData = formatNodesForCytoscape(allNodedata);
       setGraphData(formattedData);
       
+
       if (nodeContext?.setAllNodes) {
         nodeContext.setAllNodes(allNodedata);
       }
@@ -109,6 +119,9 @@ const CytoscapeGraph: React.FC<CytoscapeGraphProps> = ({
 
     //インスタンスの作成
     cytoscape.use(cola);
+    gridGuide(cytoscape)
+
+
     const cy = cytoscape({
       container: containerRef.current,
       elements: [...graphData.nodes,...graphData.edges],
@@ -146,10 +159,40 @@ const CytoscapeGraph: React.FC<CytoscapeGraphProps> = ({
           },
         },
       ],
+      grid: {
+        name: "grid",
+        fit: true, // whether to fit the viewport to the graph
+        padding: 30, // padding used on fit
+        rows: 30, // number of rows in the grid
+        columns: 30, // number of columns in the grid
+        avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
+        avoidOverlapPadding: 10, // extra spacing around nodes when avoidOverlap: true
+        nodeDimensionsIncludeLabels: false, // Excludes the label when calculating node bounding boxes for the layout algorithm
+        spacingFactor: undefined, // Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up
+        condense: false, // uses all available space on false, uses minimal space on true
+        sort: undefined, // a sorting function to order the nodes; e.g. function(a, b){ return a.data('weight') - b.data('weight') }
+        animate: false, // whether to transition the node positions
+        animationDuration: 500, // duration of animation in ms if enabled
+        animationEasing: undefined, // easing of animation if enabled
+        boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+        ready: undefined, // callback on layoutready
+        stop: undefined, // callback on layoutstop
+      },
     });
+
+    cy?.gridGuide({
+      // Configure the grid guide plugin
+      gridSpacing: 50, // Example spacing
+      snapToGrid: true // Example option
+      // Add more options as needed
+      });
+
+
+
 
     cyRef.current = cy;
     cyContext?.setcyInstance(cy);
+
 
     return () => {
       if (cyRef.current) {

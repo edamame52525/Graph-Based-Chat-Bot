@@ -4,16 +4,8 @@ CREATE TABLE nodes (
   label TEXT NOT NULL,
   query TEXT,
   response TEXT,
-  from BIGINT,
+  summary TEXT,
+  parent BIGINT,
   color TEXT DEFAULT '#6495ED',
   created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-
-CREATE EXTENSION IF NOT EXISTS vector;
-
-CREATE TABLE node_embeddings (
-  node_id BIGINT PRIMARY KEY REFERENCES nodes(id) ON DELETE CASCADE,
-  embedding vector(1536),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
 );

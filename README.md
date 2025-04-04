@@ -1,40 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+#   Graph-Based-AIChatBot
 
-## Getting Started
+## intrduction
 
-First, run the development server:
+### 課題意識
+生成AIのほとんどのインターフェースはLINEなどのコミュニケーションツールを模した物になっています。この時のデータ構造はスタックで、会話は下に積まれていく形で展開されていきます。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+しかしながら、会話をもう少し抽象的に捉えると、マインドマップのように点と点が繋がり、一つの木が根を張るように展開されるのではないかと考えました。
+
+実際、生成AIを勉強の補助に使ったりしていると、「会話の履歴を遡るのが面倒」みたいな問題を抱えることがよくあります。今回は以上のような問題意識から、グラフ構造で会話ができる生成AIを作ってみました。
+
+---
+### 提案したいこと
+「会話＋回答」のセットを一つのノードに格納し、会話の時系列的な関連をエッジでつなぎます。図で表すとこんな感じ
 ```
+Root (Q1) ──→ Q2 ──→ Q5 ──→ Q8
+│             │
+│             ├──→ Q6 ──→ Q9
+│             │
+│             └──→ Q7
+│
+├──→ Q3 ──→ Q10 ──→ Q12
+│             │
+│             └──→ Q11
+│
+└──→ Q4 ──→ Q13 ──→ Q15
+              │
+              ├──→ Q14
+              │
+              └──→ Q16 ──→ Q17
+```
+たとえば、Q9から会話を行う場合、親ノードを参照して会話の履歴を取得します。（Q9,Q6,Q2,Q1）
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+実際に作ったのはこんな感じ。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+![会話の枝分かれが可能](./images/2025-04-04_12h03_35.png)
+---
+### 嬉しいこと
+１．会話の枝分かれが可能なので、会話をスクロールして履歴を遡る必要がない事
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+２．会話が構造化されているため、余分な履歴がなく、AI側が意図を理解しやすくなる→精度の向上
 
-## Learn More
+３．会話の削除が可能
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 技術スタック
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
+Language : TypeScript\
+FrameWork : Next.js, TailwandCSS\
+Library : Cytoscape.js, Vercel AI SDK\
+Database : Supabase\
+Infrastructure : Docker\
+Version Control : Git,GitHub
 
 ・docker image build instaction
 docker build -t nextjs-app .

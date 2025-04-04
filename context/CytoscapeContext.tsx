@@ -3,13 +3,14 @@ import type { Core } from "cytoscape";
 import { NodeSingular,LayoutOptions } from "cytoscape";
 import { useNode } from "./NodeContext";
 import { NodeData } from "@/types/node_types";
-
+import cytoscape from "cytoscape"
+import cola from 'cytoscape-cola';
 interface CytoscapeInstanceContextType{
     cyInstance: (Core | null);
     setcyInstance: (cy: Core | any) => void;
     createNode: (data: NodeData) => any | null;
-    updateNode: (nodeId: string | number, data: Partial<NodeData>) => any | null;
-    deleteNode: (nodeId: string | number) => any | null;
+    updateNode: (nodeId: number, response:string) => any | null;
+    deleteNode: (nodeId: number) => any | null;
 }
 
 
@@ -19,29 +20,43 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
     const context = useNode();
     const [cyInstance , setcyInstance] = useState<Core | null>(null);
     //未実装（エージェントからクエリ＋回答の二つを受け取ってから実行する関数）
-    const createNode =useCallback((data: NodeData) => {
+    
+    
+    const createNode =useCallback((data: NodeData)=> {
         if(!cyInstance) return null;
 
-
-        console.log("作成開始",data);
-        cyInstance.add({
-            group: "nodes",
-            data: {
-                id: String(data.id),
-                label: data.label,
-                color: data.color,
-
+        cytoscape
+        cyInstance.add([
+            {
+                group: "nodes",
+                data: {
+                    id: String(data.id),
+                    label: data.label,
+                    color: data.color,
+                    query: data.query,
+                    response: data.response,
+                    parentID: String(data.parent),
+                    summary: data.summary
+                }
+            },
+            {
+                group: "edges",
+                data: {
+                    id: String("edge" + data.id),
+                    source: String(data.parent),
+                    target: String(data.id),
+                } 
             }
-        });
+        ]);
 
-        cyInstance.add({
-            group: "edges",
-            data: {
-                id: String("edge"+data.id),
-                source: String(data.from),
-                target: String(data.id),
-            }
-        });
+        const addedNode = cyInstance.getElementById(String(data.id));
+        if (addedNode.empty()) {
+            console.error("ノードが正しく追加されていません");
+            return null;
+        }
+
+        
+        
 
         const layout = cyInstance.layout(
             {
@@ -50,9 +65,9 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
               fit: false, 
               animeduration: 500, 
               nodeDimensionsIncludeLabels: true, 
-              nodeRepulsion: (node: NodeSingular) => 450,
+              nodeRepulsion: (addedNode: NodeSingular) => 450,
               gravity: 0.25, 
-              maxSimulationTime: 10000000,
+              maxSimulationTime: 1000,
               convergenceThreshold: 1e-9,
               idealEdgeLength: 20,
             } as LayoutOptions)
@@ -63,13 +78,25 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
         return 0;
     }, [cyInstance]);
 
-    //未実装（構想すら浮かんでいない）
-    const updateNode = useCallback((nodeId: string | number, data: Partial<NodeData>) => {
-        if (!cyInstance) return false;
+    const updateNode = useCallback((nodeId: number, response: string) => {
+        // Cytoscapeのノードを取得して更新
+        const nodeElement = cyInstance?.getElementById(String(nodeId));
         
-    }, [cyInstance]);
+        if (nodeElement) {
+            // responseプロパティを更新
+            nodeElement.data('response', response);
+            // ラベルも必要に応じて更新（例: 最初の8文字）
+            const shortLabel = response.substring(0, 8) + (response.length > 8 ? '...' : '');
+            nodeElement.data('label', shortLabel);
+            nodeElement.data('response',response)
+            
+            // ノードの状態を更新（例: 色を変更）
+            // nodeElement.style('background-color', '#e6f7ff');
+        }
+        
+    }, [cyInstance, context]);
 
-    const deleteNode = useCallback((nodeId: string | number) => {
+    const deleteNode = useCallback((nodeId:number) => {
         if (!cyInstance) return false;
         
         const node = cyInstance.getElementById(String(nodeId));

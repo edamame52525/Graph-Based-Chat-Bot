@@ -17,7 +17,6 @@ export default function CytoscapeEventHandle({ onNodeClick, action }: CytoscapeG
   const  cyInstance  = useCytoscape();
   const cy = cyInstance?.cyInstance;
   const nodeClickHandler = useRef<((event: EventObjectNode) => void) | null>(null);
-  console.log("cyInstance", cyInstance);
 
 
   useEffect(() => {
@@ -36,36 +35,52 @@ export default function CytoscapeEventHandle({ onNodeClick, action }: CytoscapeG
 
 
     switch(action){
-      case 'create':
-        break;
-      case 'update':
-        break;
-      case 'delete':
-        break;
       case 'detail':
         // 新しいハンドラを作成
       const handleNodeTap = (event: EventObjectNode) => {
+
+        // ハイライトスタイルの定義
+        cy.style()
+        .selector('.highlight')
+        .style({
+          'border-color': 'yellow',
+          'border-width': '2px',
+        })
+
+
         const node = event.target;
+        // すべてのノードのハイライトを解除
+        cy.nodes().removeClass('highlight');
+
+        // クリックされたノードをハイライト
+        node.addClass('highlight');
+      
+
+
         const position = node.position();
         const zoomLevel = 1;
         const viewportWidth = cy.width(); // 画面の横幅
         // const renderedPosition = cy.renderer().project(node.position()); // 画面のピクセル座標に変換
-        const offsetX = viewportWidth * 0.3; // 画面の左側に寄せるためのオフセット
+        const offsetX = viewportWidth * 0.5; // 画面の左側に寄せるためのオフセット
         // const newPan = cy.renderer().unproject({ x: offsetX, y: renderedPosition.y }); // Cytoscape座標に変換
         const nodeData: NodeData = {
           id: Number(node.id()),
           label: node.data("label"),
           query: node.data("query"),
           response: node.data("response"),
-          from: node.data("from"),
+          parent: Number(node.data("parentID")),
           color: node.data("color"),
+          summary: node.data("summary")
         };
 
-        console.log("今からアニメーション, zoomLevel:", zoomLevel, "position:", position);
+        console.log("タップされたノード",nodeData)
+
+
+
         cy.animate({
           fit:{
             eles:node,
-            padding :300
+            padding :350
           },
           zoom:zoomLevel,
           pan:{
@@ -76,7 +91,7 @@ export default function CytoscapeEventHandle({ onNodeClick, action }: CytoscapeG
           easing: 'ease-in-out'
         })
 
-
+        console.log("参照中のノード",nodeData)
         nodeContext?.setSelectedNode(nodeData);
         onNodeClick(nodeData);
       };

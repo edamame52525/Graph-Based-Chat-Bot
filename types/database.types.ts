@@ -9,59 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      node_embeddings: {
-        Row: {
-          embedding: string | null
-          node_id: number
-          updated_at: string | null
-        }
-        Insert: {
-          embedding?: string | null
-          node_id: number
-          updated_at?: string | null
-        }
-        Update: {
-          embedding?: string | null
-          node_id?: number
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "node_embeddings_node_id_fkey"
-            columns: ["node_id"]
-            isOneToOne: true
-            referencedRelation: "nodes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       nodes: {
         Row: {
           color: string | null
           created_at: string | null
-          from: number | null
           id: number
           label: string
+          parent: number | null
           query: string | null
           response: string | null
+          summary: string | null
         }
         Insert: {
           color?: string | null
           created_at?: string | null
-          from?: number | null
           id?: number
           label: string
+          parent?: number | null
           query?: string | null
           response?: string | null
+          summary?: string | null
         }
         Update: {
           color?: string | null
           created_at?: string | null
-          from?: number | null
           id?: number
           label?: string
+          parent?: number | null
           query?: string | null
           response?: string | null
+          summary?: string | null
         }
         Relationships: []
       }

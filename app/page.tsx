@@ -10,7 +10,6 @@ import { CytoscapeInstanceProvider } from "@/context/CytoscapeContext"
 import CytoscapeEventHandle from "@/components/cytoscape/CytoscapeEventHandle"
 
 
-
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [selectedNode, setSelectedNode] = useState<NodeData | null>(null)

@@ -4,9 +4,9 @@ import type { NodeData } from "@/types/node_types";
 
 interface NodeContextType {
     selectedNode: NodeData | null;
-    setSelectedNode: (node: NodeData | null) => void;
+    setSelectedNode: React.Dispatch<React.SetStateAction<NodeData | null>>;
     allNodes: NodeData[];
-    setAllNodes: (nodes: NodeData[]) => void;
+    setAllNodes: React.Dispatch<React.SetStateAction<NodeData[]>>;
 }
 
 const NodeContext = createContext<NodeContextType | undefined>(undefined);

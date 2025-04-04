@@ -13,11 +13,12 @@ export async function GET() {
         console.log("データ",data);
         const nodeData :NodeData[] = data.map(node =>({
             id: node.id,
-            from: node.from || -1,
+            parent: node.parent || 0,
             label: node.label,
             query: node.query || '',
             response: node.response || '',
             color: node.color || '',
+            summary: node.summary || ''
         }))
 
         console.log("ノードデータ",nodeData);
