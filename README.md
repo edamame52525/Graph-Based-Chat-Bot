@@ -106,7 +106,8 @@ VALUES ('Root', 'Initial query', 'Welcome to the chat system.', 'green', 'Root n
 
 ```
 OPENAI_API_KEY=your_openai_api_key_here
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url 
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ### Dockerを使用した開発
