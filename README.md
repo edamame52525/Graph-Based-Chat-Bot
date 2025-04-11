@@ -38,7 +38,7 @@ Root (Q1) ──→ Q2 ──→ Q5 ──→ Q8
 
 
 
-![デモ](https://github.com/user-attachments/assets/fdb31c23-4960-41d0-bb56-e21b32f14224)
+![デモ動画](https://github.com/user-attachments/assets/fdb31c23-4960-41d0-bb56-e21b32f14224)
 
 ---
 
