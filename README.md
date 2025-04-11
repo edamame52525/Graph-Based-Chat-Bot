@@ -59,7 +59,55 @@ Root (Q1) ──→ Q2 ──→ Q5 ──→ Q8
 
 ---
 
-## 開発環境
+## usage（逐次更新予定）
+
+### 必要なもの（docker想定）
+- Docker（Dockerを使用する場合）
+- OpenAI APIキー
+- Supabaseアカウントとプロジェクト
+
+### Supabaseのセットアップ
+
+#### 1. Supabaseプロジェクトの作成
+1. [Supabase](https://supabase.com/)にログインし、新しいプロジェクトを作成します
+2. プロジェクト名を入力し、地域を選択します
+3. 作成されたプロジェクトのURLとAPIキーを`.env.local`に設定します
+
+#### 2. テーブル構造の作成
+コンテナ内から以下のコマンドを実行してテーブルを作成します：
+
+```bash
+# SQLスクリプトの実行
+cat ./database/schema.sql | psql $DATABASE_URL
+```
+
+または、Supabaseダッシュボードの「SQLエディタ」から以下のSQLを実行:
+
+```sql
+-- ノードテーブルの作成
+CREATE TABLE public.nodes (
+  id SERIAL PRIMARY KEY,
+  label TEXT,
+  query TEXT,
+  response TEXT,
+  parent INTEGER REFERENCES public.nodes(id),
+  color TEXT DEFAULT 'blue',
+  summary TEXT
+);
+
+-- 最初のルートノードを作成
+INSERT INTO public.nodes (label, query, response, color, summary)
+VALUES ('Root', 'Initial query', 'Welcome to the chat system.', 'green', 'Root node');
+```
+
+
+### 環境変数の設定
+プロジェクトのルートディレクトリに`.env.local`ファイルを作成し、以下の環境変数を設定してください。
+
+```
+OPENAI_API_KEY=your_openai_api_key_here
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
 ### Dockerを使用した開発
 
