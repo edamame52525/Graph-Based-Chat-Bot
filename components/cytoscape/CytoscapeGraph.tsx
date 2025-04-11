@@ -12,7 +12,6 @@ import { useCytoscape } from "@/context/CytoscapeContext";
 interface CytoscapeGraphProps {
   children?: React.ReactNode;
   onNodeClick?: (nodeData: NodeData) => void;
-  action?: string;
 }
 
 
@@ -86,7 +85,6 @@ function formatNodesForCytoscape(allNodeData: NodeData[]) {
 const CytoscapeGraph: React.FC<CytoscapeGraphProps> = ({
   children,
   onNodeClick,
-  action
 }
 ) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -187,16 +185,131 @@ const CytoscapeGraph: React.FC<CytoscapeGraphProps> = ({
       // Add more options as needed
       });
 
-
-
-
     cyRef.current = cy;
     cyContext?.setcyInstance(cy);
+
+    cy.on('tap','node',(event) => {
+      // ハイライトスタイルの定義
+      cy.style()
+      .selector('.highlight')
+      .style({
+        'border-color': 'yellow',
+        'border-width': '2px',
+      })
+      const node = event.target;
+
+      // すべてのノードのハイライトを解除
+      cy.nodes().removeClass('highlight');
+
+      // クリックされたノードをハイライト
+      node.addClass('highlight');
+
+      const position = node.position();
+      const zoomLevel = 1;
+      const viewportWidth = cy.width();
+      const offsetX = viewportWidth * 0.5;
+
+      const nodeData: NodeData = {
+        id: Number(node.id()),
+        label: node.data("label"),
+        query: node.data("query"),
+        response: node.data("response"),
+        parent: Number(node.data("parentID")),
+        color: node.data("color"),
+        summary: node.data("summary")
+      };
+
+      cy.animate({
+        fit:{
+          eles:node,
+          padding :350
+        },
+        zoom:zoomLevel,
+        pan:{
+          x:position.x - offsetX-10,
+          y:position.y
+        },
+        duration : 500,
+        easing: 'ease-in-out'
+      })
+
+      console.log("参照中のノード",nodeData)
+      nodeContext?.setSelectedNode(nodeData);
+      if (onNodeClick) {
+        onNodeClick(nodeData);
+      }
+    });
+
+    cy.on('add', 'node', (event) => {
+      const node = event.target;
+
+      const newNode: NodeData = {
+        id: Number(node.id()),
+        label: node.data("label"),
+        query: node.data("query"),
+        response: node.data("response"),
+        parent: Number(node.data("parentID")),
+        color: node.data("color"),
+        summary: node.data("summary")
+      };
+
+      // すべてのノードのハイライトを解除
+      cy.nodes().removeClass('highlight');
+
+      // クリックされたノードをハイライト
+      node.addClass('highlight');
+
+      const layout = cy.layout(
+            {
+              name: "cola",
+              animate: true,
+              fit: false, 
+              animeduration: 500, 
+              nodeDimensionsIncludeLabels: true, 
+              nodeRepulsion: (Node: NodeSingular) => 450,
+              gravity: 0.25, 
+              maxSimulationTime: 100000,
+              convergenceThreshold: 1e-9,
+              idealEdgeLength: 20,
+            } as LayoutOptions)
+    
+      layout.run()
+
+
+      const position = node.position();
+      const zoomLevel = 1;
+      const viewportWidth = cy.width();
+      const offsetX = viewportWidth * 0.5;
+      
+
+      // cy.animate({
+      //   fit:{
+      //     eles:node,
+      //     padding :350
+      //   },
+      //   zoom:zoomLevel,
+      //   pan:{
+      //     x:position.x - offsetX-10,
+      //     y:position.y
+      //   },
+      //   duration : 500,
+      //   easing: 'ease-in-out'
+      // })
+      
+      nodeContext?.setSelectedNode(newNode);
+
+      if (onNodeClick) {
+        onNodeClick(newNode);
+      }
+
+    });
+    
 
 
     return () => {
       if (cyRef.current) {
-        cyRef.current.destroy();
+        cyRef.current.removeAllListeners();
+        cyRef.current.off('tap', 'node');
         cyRef.current = null;
         cyContext?.setcyInstance(null);
       }

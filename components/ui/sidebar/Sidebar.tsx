@@ -9,46 +9,60 @@ import { useNode } from "@/context/NodeContext"
 import { useCytoscape } from "@/context/CytoscapeContext"
 import { set } from "react-hook-form"
 import { useAgent } from "@/components/agent/agent"
+import { useStreaming } from "@/context/streamingContext"
 interface SidebarProps {
     isOpen: boolean
     onClose: () => void
     nodeData: NodeData | null
 }
-
-type OperationProps = 'none' | 'create' | 'update' | 'delete' | 'detail';
-
   
 export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
   const [messageText, setMessageText] = useState("");
   const [nodeResponse,setNodeResponse] = useState<string|null>()
+  const { isStreaming, streamingNode, streamingContent } = useStreaming();
+
   const nodeContext = useNode();
   const cyInstance = useCytoscape();
   const { processQuery } = useAgent();
   // 発火時の処理
   const handleSendMessage = async () => {
 
-
     if (!messageText.trim()) return;
     console.log("Sending message:", messageText);
-    const result = await processQuery(messageText,nodeContext?.selectedNode?.id!)
+    let tempMessage = messageText;
+    setMessageText("");
+  
+    await processQuery(tempMessage,nodeContext?.selectedNode?.id!)
     console.log("参照ノードのコンテンツ",nodeContext?.selectedNode);
-    setMessageText("");}
+  }
 
-  useEffect(() =>{
-    if (nodeContext?.selectedNode?.id && cyInstance) {
-      const selectedNodeId = nodeContext.selectedNode.id.toString();
-      const element = cyInstance?.cyInstance?.getElementById(selectedNodeId);
+  // useEffect(() =>{
+  //   if (nodeContext?.selectedNode?.id && cyInstance) {
+  //     const selectedNodeId = nodeContext.selectedNode.id.toString();
+  //     const element = cyInstance?.cyInstance?.getElementById(selectedNodeId);
+  //     console.log("現在のレスポンス材料",element?.data)
+  //     if (element && element.data) {
+  //       const response = element.data("response");
+  //       setNodeResponse(response || "");
+  //     } else {
+  //       setNodeResponse("");
+  //     }
+  //   }
 
-      if (element && element.data) {
-        const response = element.data("response");
-        setNodeResponse(response || "");
-      } else {
-        setNodeResponse("");
-      }
+
+  // },[nodeContext?.selectedNode?.response])
+
+
+  // 表示するレスポンスを決定
+  const displayResponse = () => {
+    // ストリーミング中で、現在選択中のノードがストリーミング対象なら
+    if (isStreaming && streamingNode && nodeContext?.selectedNode?.id === streamingNode.id) {
+      return streamingContent;
     }
-
-
-  },[nodeContext?.selectedNode])
+    
+    // 通常表示
+    return nodeContext?.selectedNode?.response || "";
+  };
     
 
 
@@ -61,7 +75,7 @@ export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
     >
       <div className="p-6 h-full overflow-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">マイクロサービスアーキテクチャに関する情報</h2>
+          {/* <h2 className="text-2xl font-bold">マイクロサービスアーキテクチャに関する情報</h2> */}
           <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-100" aria-label="Close sidebar">
             <X className="h-6 w-6" />
           </button>
@@ -78,7 +92,10 @@ export default function Sidebar({ isOpen, onClose, nodeData }: SidebarProps) {
 
               <div>
                 <h3 className="text-lg font-semibold ">AIの回答:</h3>
-                <ReactMarkdown>{nodeResponse}</ReactMarkdown>
+                {isStreaming && streamingNode?.id === nodeContext?.selectedNode?.id && (
+                <div className="text-blue-500 text-sm mb-2">応答中...</div>
+                )}
+              <ReactMarkdown>{displayResponse()}</ReactMarkdown>
               </div>
 
               <div className="grid w-full gap-1.5">

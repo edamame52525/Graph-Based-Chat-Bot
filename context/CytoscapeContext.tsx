@@ -5,6 +5,8 @@ import { useNode } from "./NodeContext";
 import { NodeData } from "@/types/node_types";
 import cytoscape from "cytoscape"
 import cola from 'cytoscape-cola';
+import { EventObjectNode } from "cytoscape";
+
 interface CytoscapeInstanceContextType{
     cyInstance: (Core | null);
     setcyInstance: (cy: Core | any) => void;
@@ -22,7 +24,7 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
     //未実装（エージェントからクエリ＋回答の二つを受け取ってから実行する関数）
     
     
-    const createNode =useCallback((data: NodeData)=> {
+    const createNode =useCallback((data: NodeData) => {
         if(!cyInstance) return null;
 
         cytoscape
@@ -37,7 +39,7 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
                     response: data.response,
                     parentID: String(data.parent),
                     summary: data.summary
-                }
+                } as unknown as cytoscape.NodeDataDefinition
             },
             {
                 group: "edges",
@@ -45,7 +47,7 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
                     id: String("edge" + data.id),
                     source: String(data.parent),
                     target: String(data.id),
-                } 
+                } as cytoscape.EdgeDataDefinition
             }
         ]);
 
@@ -55,26 +57,6 @@ export function CytoscapeInstanceProvider({children}:{children:ReactNode}) {
             return null;
         }
 
-        
-        
-
-        const layout = cyInstance.layout(
-            {
-              name: "cola",
-              animate: true,
-              fit: false, 
-              animeduration: 500, 
-              nodeDimensionsIncludeLabels: true, 
-              nodeRepulsion: (addedNode: NodeSingular) => 450,
-              gravity: 0.25, 
-              maxSimulationTime: 1000,
-              convergenceThreshold: 1e-9,
-              idealEdgeLength: 20,
-            } as LayoutOptions)
-    
-          layout.run()
-
-        context?.setSelectedNode(data)
         return 0;
     }, [cyInstance]);
 

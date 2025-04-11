@@ -6,18 +6,20 @@ import { useNode } from '@/context/NodeContext';
 import { readStreamableValue } from 'ai/rsc';
 import { runThread } from '@/lib/runThread';
 import fetchSummary from '@/utils/getHistory';
-import { any, number } from 'zod';
-import { Container } from 'postcss';
 import { generateSummary } from '@/lib/generateSummary';
-import { markCurrentScopeAsDynamic } from 'next/dist/server/app-render/dynamic-rendering';
+import { useStreaming } from '@/context/streamingContext';
 
 
 export function useAgent(){
     const cyInstance = useCytoscape();
     const NodeContext = useNode();
-    const [content,setContent] = useState<string>("")
     const contentRef = useRef<string>(""); // 実際のデータを保持
-
+    const {
+        setIsStreaming,
+        updateStreamingContent,
+        setStreamingNode,
+        finishStreaming,
+    } = useStreaming();
 
 
 
@@ -80,6 +82,11 @@ export function useAgent(){
         } else {
             console.log("No summary found");
         }
+
+
+        // ストリーミング状態の初期化
+        setIsStreaming(true);
+        setStreamingNode(newNode);
    
         // ーーーーstreaming処理ーーーーー
         const {stream} = await runThread(query,history);
@@ -88,8 +95,7 @@ export function useAgent(){
         }
         for await (const delta of readStreamableValue(stream)) {
             contentRef.current += delta
-            setContent(contentRef.current)
-            console.log("content",contentRef.current)
+            updateStreamingContent(contentRef.current);
             cyInstance?.updateNode(newNode.id,contentRef.current)
         }
 
@@ -120,7 +126,8 @@ export function useAgent(){
         await updateAllNodes(newNode);
 
 
-        
+        // ストリーミング完了処理
+        finishStreaming(newNode);
 
 
         
