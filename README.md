@@ -38,7 +38,7 @@ Root (Q1) ──→ Q2 ──→ Q5 ──→ Q8
 
 
 
-[![demo](./static/2025-04-04_12h03_35.png)](https://youtu.be/hCocXV8zGh4)
+[デモ動画リンク](https://youtu.be/hCocXV8zGh4)
 
 ---
 
